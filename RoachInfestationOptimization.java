@@ -37,6 +37,7 @@ class RoachInfestationOptimization extends binMeta {
                     distances[i][j] = distances[j][i] = d;
                 }
             }
+            //TODO: calculate the median
             for (int i = 0; i < na; ++i) {
                 Roach current = roaches[i];
                 if (roaches[i].getHunger() < thunger) {
@@ -59,27 +60,9 @@ class RoachInfestationOptimization extends binMeta {
                 } else {
                     roaches[i] = new Roach(0, 0, 20, 20, i);
                 }
+                //TODO: add the new position for food
             }
 
         }
     }
-    /*
-    * initialize n roaches to random positions
-    loop tMax times
-      compute distances between all roaches
-      compute median distance
-      for-each roach
-        compute number neighbors
-        exchange data with neighbors
-        if not hungry
-          compute new velocity
-          compute new position
-          check if new best position
-        else if hungry
-          relocate to new position
-        end-if
-      end-for
-    end loop
-    return best position found
-* */
 }

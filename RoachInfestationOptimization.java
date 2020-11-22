@@ -17,23 +17,50 @@ class RoachInfestationOptimization extends binMeta {
         double A3 = 0.65;
         int thunger = 100;
 
+        Random random = new Random();
+
         Roach[] roaches = new Roach[na];
 
         for (int t = 0; t<tmax; ++t) {
             //Initialisation of roaches
+            double[] bestPosition = new double[na];
             for (int i = 0; i < na; ++i)
                 roaches[i] = new Roach(0, 0, 20, 20, i);
-
-
-        }
-
-        for (int t = 0; t<tmax; ++t) {
-            // M = [Mjk] = [||⃗xj − ⃗xk||2]
-            // dg =median{Mjk ∈M:1≤j<k≤Na}
-            for (int i = 0; i<na; ++i) {
-                //if F(⃗xi) < F(p⃗i) then p⃗i = ⃗xi
-
+            //initialisation of the distance between roaches
+            double[][] distances = new double[na][];
+            for (int i = 0; i < na; ++i)
+                distances[i] = new double[na];
+            for (int i = 0; i < na - 1; ++i) {
+                for (int j = i + 1; j < na; ++j) {
+                    double d = Math.sqrt(Math.pow(roaches[i].getPosition()[0] - roaches[j].getPosition()[0], 2) +
+                            Math.pow(roaches[i].getPosition()[1] - roaches[j].getPosition()[1], 2));
+                    distances[i][j] = distances[j][i] = d;
+                }
             }
+            for (int i = 0; i < na; ++i) {
+                Roach current = roaches[i];
+                if (roaches[i].getHunger() < thunger) {
+                    double vx, vy;
+                    vx = C0*current.getVelocity()[0] +
+                            (CMAX * random.nextDouble() * (current.getPersonalBestPosition()[0] -
+                                    current.getPosition()[0])) +
+                            (CMAX * random.nextDouble() * (current.getGroupBestPosition()[0] -
+                                    current.getPosition()[0]));
+                    vy = C0*current.getVelocity()[1] +
+                            (CMAX * random.nextDouble() * (current.getPersonalBestPosition()[1] -
+                                    current.getPosition()[1])) +
+                            (CMAX * random.nextDouble() * (current.getGroupBestPosition()[1] -
+                                    current.getPosition()[1]));
+                    current.setVelocity(new double[]{vx, vy});
+
+                    current.getPosition()[0] += vx;
+                    current.getPosition()[1] += vy;
+
+                } else {
+                    roaches[i] = new Roach(0, 0, 20, 20, i);
+                }
+            }
+
         }
     }
     /*

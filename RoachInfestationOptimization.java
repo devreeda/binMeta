@@ -2,9 +2,6 @@ import java.util.Random;
 
 class RoachInfestationOptimization extends binMeta {
 
-//public RoachInfestationOptimization(double[] pos, double[] velocity, double[] personalBestPos, double[] groupBestPos, int hunger, Random rnd) {
-    //}
-
     @Override
     public void optimize() {
         //number of roaches
@@ -23,17 +20,18 @@ class RoachInfestationOptimization extends binMeta {
 
         for (int t = 0; t<tmax; ++t) {
             //Initialisation of roaches
-            double[] bestPosition = new double[na];
+            int[] bestPosition = new int[na];
             for (int i = 0; i < na; ++i)
                 roaches[i] = new Roach(0, 0, 20, 20, i);
             //initialisation of the distance between roaches
-            double[][] distances = new double[na][];
+            int[][] distances = new int[na][];
             for (int i = 0; i < na; ++i)
-                distances[i] = new double[na];
+                distances[i] = new int[na];
             for (int i = 0; i < na - 1; ++i) {
                 for (int j = i + 1; j < na; ++j) {
-                    double d = Math.sqrt(Math.pow(roaches[i].getPosition()[0] - roaches[j].getPosition()[0], 2) +
-                            Math.pow(roaches[i].getPosition()[1] - roaches[j].getPosition()[1], 2));
+                    //distance between roaches
+                    int d = (int)(Math.sqrt(Math.pow(roaches[i].getPosition()[0] - roaches[j].getPosition()[0], 2) +
+                            Math.pow(roaches[i].getPosition()[1] - roaches[j].getPosition()[1], 2)));
                     distances[i][j] = distances[j][i] = d;
                 }
             }
@@ -41,19 +39,20 @@ class RoachInfestationOptimization extends binMeta {
             for (int i = 0; i < na; ++i) {
                 Roach current = roaches[i];
                 if (roaches[i].getHunger() < thunger) {
-                    double vx, vy;
-                    vx = C0*current.getVelocity()[0] +
-                            (CMAX * random.nextDouble() * (current.getPersonalBestPosition()[0] -
+                    int vx, vy;
+                    vx = (int)(C0*current.getVelocity()[0] +
+                            (CMAX * random.nextInt() * (current.getPersonalBestPosition()[0] -
                                     current.getPosition()[0])) +
-                            (CMAX * random.nextDouble() * (current.getGroupBestPosition()[0] -
-                                    current.getPosition()[0]));
-                    vy = C0*current.getVelocity()[1] +
-                            (CMAX * random.nextDouble() * (current.getPersonalBestPosition()[1] -
+                            (CMAX * random.nextInt() * (current.getGroupBestPosition()[0] -
+                                    current.getPosition()[0])));
+                    vy = (int)(C0*current.getVelocity()[1] +
+                            (CMAX * random.nextInt() * (current.getPersonalBestPosition()[1] -
                                     current.getPosition()[1])) +
-                            (CMAX * random.nextDouble() * (current.getGroupBestPosition()[1] -
-                                    current.getPosition()[1]));
-                    current.setVelocity(new double[]{vx, vy});
+                            (CMAX * random.nextInt() * (current.getGroupBestPosition()[1] -
+                                    current.getPosition()[1])));
+                    current.setVelocity(new int[]{vx, vy});
 
+                    // BAAAAAAD
                     current.getPosition()[0] += vx;
                     current.getPosition()[1] += vy;
 

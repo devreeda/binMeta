@@ -125,6 +125,9 @@ public class ColorPartition extends Objective
       Double value = obj.value(D);
       System.out.println(obj);
       System.out.println(obj.show());
+      System.out.println();
+      System.out.println(D);
+      System.out.println(value);
    }
 }
 

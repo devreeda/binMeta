@@ -4,10 +4,10 @@ public class Roach {
     /**
      * Attributes of a Roach
      */
-    private double[] position;
-    private double[] velocity;
-    private double[] personalBestPosition;
-    private double[] groupBestPosition;
+    private int[] position;
+    private int[] velocity;
+    private int[] personalBestPosition;
+    private int[] groupBestPosition;
     private int hunger;
     private Random random;
     private final int THUNGER = 100;
@@ -20,16 +20,16 @@ public class Roach {
      * @param maxY
      * @param randomSeed
      */
-    public Roach(double minX, double minY, double maxX, double maxY, int randomSeed) {
+    public Roach(int minX, int minY, int maxX, int maxY, int randomSeed) {
         this.random = new Random(randomSeed);
         this.hunger = this.random.nextInt(THUNGER);
-        position = new double[2];
-        velocity = new double[2];
-        personalBestPosition = new double[2];
-        groupBestPosition = new double[2];
+        position = new int[2];
+        velocity = new int[2];
+        personalBestPosition = new int[2];
+        groupBestPosition = new int[2];
 
-        position[0] = (maxX - minX) * random.nextDouble() + minX;
-        position[1] = (maxY - minY) * random.nextDouble() + minY;
+        position[0] = (int)((maxX - minX) * random.nextInt() + minX);
+        position[1] = (int)((maxY - minY) * random.nextInt() + minY);
         personalBestPosition[0] = this.position[0];
         personalBestPosition[1] = this.position[1];
 
@@ -39,35 +39,35 @@ public class Roach {
 
     //GETTERS AND SETTERS
 
-    public double[] getPosition() {
+    public int[] getPosition() {
         return position;
     }
 
-    public void setPosition(double[] position) {
+    public void setPosition(int[] position) {
         this.position = position;
     }
 
-    public double[] getVelocity() {
+    public int[] getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(double[] velocity) {
+    public void setVelocity(int[] velocity) {
         this.velocity = velocity;
     }
 
-    public double[] getPersonalBestPosition() {
+    public int[] getPersonalBestPosition() {
         return personalBestPosition;
     }
 
-    public void setPersonalBestPosition(double[] personalBestPosition) {
+    public void setPersonalBestPosition(int[] personalBestPosition) {
         this.personalBestPosition = personalBestPosition;
     }
 
-    public double[] getGroupBestPosition() {
+    public int[] getGroupBestPosition() {
         return groupBestPosition;
     }
 
-    public void setGroupBestPosition(double[] groupBestPosition) {
+    public void setGroupBestPosition(int[] groupBestPosition) {
         this.groupBestPosition = groupBestPosition;
     }
 

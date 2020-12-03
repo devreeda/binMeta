@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class RandomWalk extends binMeta
 {
    // RandomWalk constructor
-   public RandomWalk(Data startPoint,Objective obj,long maxTime)
+   public RandomWalk(Data startPoint, Objective obj, long maxTime)
    {
       try
       {

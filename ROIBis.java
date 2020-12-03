@@ -33,7 +33,7 @@ public class ROIBis extends binMeta{
     @Override
     public void optimize() {
         int na = 20; // number of roaches
-        int tmax = 1000; // nombre maximal d'itérations
+        int tmax = 10000; // nombre maximal d'itérations
         double C0 = 0.7, CMAX  = 1.43;
         int thunger = 100;
 
@@ -41,11 +41,14 @@ public class ROIBis extends binMeta{
 
         RoachBis[] roaches = new RoachBis[na];
         // TODO - changer le bound en ITMAX
-        for (int t = 0; t<tmax; ++t) {
+        long startime = System.currentTimeMillis();
+
+        //for (int t = 0; t<tmax; ++t)
+        while (System.currentTimeMillis() - startime < this.maxTime){
             // initialisation of roaches
             Data[] bestPosition = new Data[na];
             for (int i = 0; i<na; ++i)
-                roaches[i] = new RoachBis(this.solution,random.nextInt(i+1),i);
+                roaches[i] = new RoachBis(new Data(this.solution.numberOfBits(), 0.5),random.nextInt(i+1),i);
             // initialisation of the distance between roaches
             //TODO - à voir, comparer avec les méthodes de Data/Objective
             int[][] distances = new int[na][];
@@ -65,7 +68,7 @@ public class ROIBis extends binMeta{
             // FORMULE MATHS
             for (int i = 0; i < na; ++i) {
                 RoachBis current = roaches[i];
-                // TODO - AJOUTER A COMPARAISON AVEC LA SOLUTION GLOBALE
+                // DONE - AJOUTER A COMPARAISON AVEC LA SOLUTION GLOBALE
                 double value = obj.value(current.getPosition());
                 //System.out.println("value : "+value);//
                 //System.out.println("objValue : "+this.objValue);//
@@ -74,6 +77,21 @@ public class ROIBis extends binMeta{
                     this.objValue = value;
                     this.solution = new Data(current.getPosition());
                 }
+
+                // TALK TO THE NEIGHBOURS
+                for (int j = 0; j<na; ++j) {
+                    if (this.objValue > value) {
+                        this.objValue = value;
+                        this.solution = new Data(current.getPosition());
+                    }
+                    if (distances[i][j] <= 1) {
+                        double valueN = obj.value(roaches[j].getPosition());
+                        if (value > valueN)
+                            current.setGroupBestPosition(roaches[j].getPosition());
+                    }
+                }
+
+
                 if (roaches[i].getHunger() < thunger) {
                     int v;
                     v = (int)(C0*current.getVelocity() +
@@ -85,6 +103,7 @@ public class ROIBis extends binMeta{
                     //System.out.println(v);
                     current.setVelocity(v);
                     // TODO - PEUT-ÊTRE QUE L'ON DEVRAIT SÉLÉCTIONNER SELON LA DISTANCE LA PLUS PROCHE
+                    // TODO - COMPARER LES BEST SOLUTIONS DE CHACUN
                     current.setPosition(current.getPosition().randomSelectInNeighbour(1+v));
 
                     roaches[i] = current;
@@ -92,21 +111,20 @@ public class ROIBis extends binMeta{
                 } else {
                     roaches[i] = new RoachBis(new Data(this.solution,true),random.nextInt(i+1),i);
                 }
-                //TODO: add the new position for food
             }
             // ON RECALCUL LES DISTANCES DE HAMMING ENTRE AGENTS
             for (int i = 0; i<na; ++i) {
                 for (int j = 0; j<na; ++j) {
                     // distance between roaches
-                    // TODO : calculer les distances de Hamming entre i et j
+                    // DONE : calculer les distances de Hamming entre i et j
                     int dBis = roaches[i].getPosition().hammingDistanceTo(roaches[j].getPosition());
                     //int d = (int)(Math.sqrt(Math.pow(roaches[i].getPosition()[0] - roaches[j].getPosition()[0], 2) +
                     //        Math.pow(roaches[i].getPosition()[1] - roaches[j].getPosition()[1], 2)));
                     distances[i][j] = distances[j][i] = dBis;
                 }
             }
-            if (t%100 == 0)
-                System.out.println(Arrays.toString(roaches));//
+            //if (t%100 == 0)
+              //  System.out.println(Arrays.toString(roaches));//
             //System.out.println(Arrays.deepToString(distances));//
 
         }

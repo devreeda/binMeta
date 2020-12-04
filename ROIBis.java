@@ -102,14 +102,25 @@ public class ROIBis extends binMeta{
 
                     //System.out.println(v);
                     current.setVelocity(v);
+
+                    Data minPosition = current.getGroupBestPosition();
+
+                    for (int j = 0; j<10; ++j) {
+                        Data position = current.getGroupBestPosition().randomSelectInNeighbour(5);
+                        if (obj.value(position) < obj.value(minPosition)) {
+                            minPosition = position;
+                        }
+                    }
+
+
                     // TODO - PEUT-ÊTRE QUE L'ON DEVRAIT SÉLÉCTIONNER SELON LA DISTANCE LA PLUS PROCHE
                     // TODO - COMPARER LES BEST SOLUTIONS DE CHACUN
-                    current.setPosition(current.getPosition().randomSelectInNeighbour(1+v));
+                    current.setPosition(minPosition);
 
                     roaches[i] = current;
 
                 } else {
-                    roaches[i] = new RoachBis(new Data(this.solution,true),random.nextInt(i+1),i);
+                    roaches[i] = new RoachBis(obj.solutionSample(),random.nextInt(i+1),i);
                 }
             }
             // ON RECALCUL LES DISTANCES DE HAMMING ENTRE AGENTS
@@ -158,6 +169,9 @@ public class ROIBis extends binMeta{
     }
 
     public static void main(String[] args) {
+        int ITMAX = 10000;
+
+        // bit counter
         int n = 50;
         Objective obj = new BitCounter(n);
         Data D = obj.solutionSample();
@@ -166,5 +180,42 @@ public class ROIBis extends binMeta{
         System.out.println();
         roi.optimize();
         System.out.println(roi);
+
+        // Fermat
+        int exp = 2;
+        int ndigits = 10;
+        obj = new Fermat(exp,ndigits);
+        D = obj.solutionSample();
+        roi = new ROIBis(D,obj,ITMAX);
+        System.out.println(roi);
+        System.out.println("starting point : " + roi.getSolution());
+        System.out.println("optimizing ...");
+        roi.optimize();
+        System.out.println(roi);
+        System.out.println("solution : " + roi.getSolution());
+        Data x = new Data(roi.solution,0,ndigits-1);
+        Data y = new Data(roi.solution,ndigits,2*ndigits-1);
+        Data z = new Data(roi.solution,2*ndigits,3*ndigits-1);
+        System.out.print("equivalent to the equation : " + x.posLongValue() + "^" + exp + " + " + y.posLongValue() + "^" + exp);
+        if (roi.objValue == 0.0)
+            System.out.print(" == ");
+        else
+            System.out.print(" ?= ");
+        System.out.println(z.posLongValue() + "^" + exp);
+        System.out.println();
+
+        // ColorPartition
+        n = 4;  int m = 14;
+        ColorPartition cp = new ColorPartition(n,m);
+        D = cp.solutionSample();
+        roi = new ROIBis(D,cp,ITMAX);
+        System.out.println(roi);
+        System.out.println("starting point : " + roi.getSolution());
+        System.out.println("optimizing ...");
+        roi.optimize();
+        System.out.println(roi);
+        System.out.println("solution : " + roi.getSolution());
+        cp.value(roi.solution);
+        System.out.println("corresponding to the matrix :\n" + cp.show());
     }
 }

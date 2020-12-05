@@ -26,6 +26,42 @@ public class ROIBisBis extends binMeta {
         for (int i = 0; i<na; ++i) {
             roaches[i] = new RoachBis(obj.solutionSample(), 0, i);
         }
+        // sans les distances
+        long startTime = System.currentTimeMillis();
+        //main loop
+        while (System.currentTimeMillis() - startTime < maxTime) {
+            for (int i = 0; i<na; ++i) {
+                if (roaches[i].getHunger() < thunger) {
+                    for (int j = 0; j<na; ++j) {
+                        //if roaches[j] is a neighbour of i
+                        if (roaches[i].getPosition().hammingDistanceTo(roaches[j].getPosition()) <= 1) {
+                            //take the best position between the two of em
+                            if (obj.value(roaches[i].getPosition()) > obj.value(roaches[j].getPosition())) {
+                                roaches[i].setPosition(roaches[j].getPosition());
+                            }
+                        }
+                    }
+
+                    //new generated random position from the best local position
+                    Data newD = roaches[i].getPosition().randomSelectInNeighbour(5);
+
+                    if (obj.value(newD) < obj.value(roaches[i].getPosition())) {
+                        roaches[i].setPosition(newD);
+                    }
+
+                    // check if the current position is the best amongst all
+                    if (obj.value(roaches[i].getPosition()) < objValue) {
+                        this.objValue = obj.value(roaches[i].getPosition());
+                        this.solution = roaches[i].getPosition();
+                    }
+
+                    // on incremente le hunger
+                    roaches[i].setHunger(roaches[i].getHunger()+1);
+                } else {
+                    roaches[i] = new RoachBis(obj.solutionSample(), 0, i);
+                }
+            }
+        }
 
     }
 

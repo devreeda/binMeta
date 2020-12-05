@@ -119,6 +119,9 @@ public class ROIBis extends binMeta{
 
                     roaches[i] = current;
 
+                    // TODO : INCREMENTER LE HUNGER
+                    roaches[i].setHunger(roaches[i].getHunger()+1);
+
                 } else {
                     roaches[i] = new RoachBis(obj.solutionSample(),random.nextInt(i+1),i);
                 }
